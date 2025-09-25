@@ -75,11 +75,11 @@ class Produit(models.Model):
     )
 
 
-class UtilisationMatierePremiere(models.QuantiteMatierePremiere):
+class UtilisationMatierePremiere(QuantiteMatierePremiere):
     pass
 
 
-class ApprovisionnementMatierePremiere(models.QuantiteMatierePremiere):
+class ApprovisionnementMatierePremiere(QuantiteMatierePremiere):
     localisation = models.ForeignKey(
         Localisation,
         on_delete=models.PROTECT,
