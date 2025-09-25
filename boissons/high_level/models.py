@@ -14,6 +14,8 @@ class MatierePremiere(models.Model):
     nom = models.CharField(max_length=100)
     stock = models.IntegerField()
     emprise = models.IntegerField()
+    def __str__(self):
+        return(self.nom)
 
 
 class QuantiteMatierePremiere(models.Model):
@@ -30,13 +32,16 @@ class QuantiteMatierePremiere(models.Model):
 class Metier(models.Model):
     nom = models.CharField(max_length=100)
     remuneration = models.IntegerField()
+    def __str__(self):
+        return(self.nom)
 
 
 class Localisation(models.Model):
     nom = models.CharField(max_length=100)
     taxes = models.IntegerField()
     prix_m2 = models.IntegerField()
-
+    def __str__(self):
+        return(self.nom)
 
 class Energie(models.Model):
     nom = models.CharField(max_length=100)
@@ -45,7 +50,8 @@ class Energie(models.Model):
         Localisation,
         on_delete=models.PROTECT,
     )
-
+    def __str__(self):
+        return(self.nom)
 
 class DebitEnergie(models.Model):
     debit = models.IntegerField()
@@ -62,8 +68,25 @@ class Local(models.Model):
         on_delete=models.PROTECT,
     )
     surface = models.IntegerField()
-
-
+    def __str__(self):
+        return(self.nom)
+    def costs(self):
+   
+        prix_m2 = self.localisation.prix_m2
+        
+       
+        stock = MatierePremiere.objects.first().stock
+        prix_unitaire = ApprovisionnementMatierePremiere.objects.first().prix_unitaire
+        prix_energie = Energie.objects.first().prix
+        debit_energie = DebitEnergie.objects.first().debit
+        prix_machine = Machine.objects.first().prix_achat
+        
+        return (
+            self.surface * prix_m2 +
+            stock * prix_unitaire +
+            prix_energie * debit_energie +
+            prix_machine
+        )
 class Produit(models.Model):
     nom = models.CharField(max_length=100)
     prix_de_vente = models.IntegerField()
@@ -73,7 +96,8 @@ class Produit(models.Model):
         Local,
         on_delete=models.PROTECT,
     )
-
+    def __str__(self):
+        return(self.nom)
 
 class UtilisationMatierePremiere(QuantiteMatierePremiere):
     pass
@@ -109,7 +133,8 @@ class Machine(models.Model):
         Local,
         on_delete=models.PROTECT,
     )
-
+    def __str__(self):
+        return(self.nom)
 
 class Fabrication(models.Model):
     produit = models.ForeignKey(
