@@ -1,5 +1,5 @@
 from django.db import models
-
+import json
 # Create your models here.
 # models.IntegerField()
 # models.CharField(max_length=100)
@@ -14,8 +14,24 @@ class MatierePremiere(models.Model):
     nom = models.CharField(max_length=100)
     stock = models.IntegerField()
     emprise = models.IntegerField()
+
     def __str__(self):
         return(self.nom)
+    def toJSON(self):
+        return(json.dumps(
+            self,
+            default=lambda o: o.__dict__,
+            sort_keys=True,
+            indent=4)
+        )
+    def toJSON(self):
+        return(json.dumps(
+            self,
+            default=lambda o: o.__dict__,
+            sort_keys=True,
+            indent=4)
+        )
+    
 
 
 class QuantiteMatierePremiere(models.Model):
@@ -27,14 +43,26 @@ class QuantiteMatierePremiere(models.Model):
 
     class Meta:
         abstract = True
-
+    def toJSON(self):
+        return(json.dumps(
+            self,
+            default=lambda o: o.__dict__,
+            sort_keys=True,
+            indent=4)
+        )
 
 class Metier(models.Model):
     nom = models.CharField(max_length=100)
     remuneration = models.IntegerField()
     def __str__(self):
         return(self.nom)
-
+    def toJSON(self):
+        return(json.dumps(
+            self,
+            default=lambda o: o.__dict__,
+            sort_keys=True,
+            indent=4)
+        )
 
 class Localisation(models.Model):
     nom = models.CharField(max_length=100)
@@ -42,6 +70,13 @@ class Localisation(models.Model):
     prix_m2 = models.IntegerField()
     def __str__(self):
         return(self.nom)
+    def toJSON(self):
+        return(json.dumps(
+            self,
+            default=lambda o: o.__dict__,
+            sort_keys=True,
+            indent=4)
+        )
 
 class Energie(models.Model):
     nom = models.CharField(max_length=100)
@@ -52,14 +87,26 @@ class Energie(models.Model):
     )
     def __str__(self):
         return(self.nom)
-
+    def toJSON(self):
+        return(json.dumps(
+            self,
+            default=lambda o: o.__dict__,
+            sort_keys=True,
+            indent=4)
+        )
 class DebitEnergie(models.Model):
     debit = models.IntegerField()
     energie = models.ForeignKey(
         Energie,
         on_delete=models.PROTECT,
     )
-
+    def toJSON(self):
+        return(json.dumps(
+            self,
+            default=lambda o: o.__dict__,
+            sort_keys=True,
+            indent=4)
+        )
 
 class Local(models.Model):
     nom = models.CharField(max_length=100)
@@ -87,6 +134,13 @@ class Local(models.Model):
             prix_energie * debit_energie +
             prix_machine
         )
+    def toJSON(self):
+        return(json.dumps(
+            self,
+            default=lambda o: o.__dict__,
+            sort_keys=True,
+            indent=4)
+        )
 class Produit(models.Model):
     nom = models.CharField(max_length=100)
     prix_de_vente = models.IntegerField()
@@ -98,6 +152,13 @@ class Produit(models.Model):
     )
     def __str__(self):
         return(self.nom)
+    def toJSON(self):
+        return(json.dumps(
+            self,
+            default=lambda o: o.__dict__,
+            sort_keys=True,
+            indent=4)
+        )
 
 class UtilisationMatierePremiere(QuantiteMatierePremiere):
     pass
@@ -110,7 +171,13 @@ class ApprovisionnementMatierePremiere(QuantiteMatierePremiere):
     )
     prix_unitaire = models.IntegerField()
     delais = models.IntegerField()
-
+    def toJSON(self):
+        return(json.dumps(
+            self,
+            default=lambda o: o.__dict__,
+            sort_keys=True,
+            indent=4)
+        )
 
 class RessourceHumaine(models.Model):
     metier = models.ForeignKey(
@@ -118,6 +185,13 @@ class RessourceHumaine(models.Model):
         on_delete=models.PROTECT,
     )
     quantite = models.IntegerField()
+    def toJSON(self):
+        return(json.dumps(
+            self,
+            default=lambda o: o.__dict__,
+            sort_keys=True,
+            indent=4)
+        )
 
 
 class Machine(models.Model):
@@ -135,6 +209,13 @@ class Machine(models.Model):
     )
     def __str__(self):
         return(self.nom)
+    def toJSON(self):
+        return(json.dumps(
+            self,
+            default=lambda o: o.__dict__,
+            sort_keys=True,
+            indent=4)
+        )
 
 class Fabrication(models.Model):
     produit = models.ForeignKey(
@@ -144,3 +225,10 @@ class Fabrication(models.Model):
     utilisations_matiere_premiere = models.ManyToManyField(UtilisationMatierePremiere)
     machines = models.ManyToManyField(Machine)
     ressources_humaines = models.ManyToManyField(RessourceHumaine)
+    def toJSON(self):
+        return(json.dumps(
+            self,
+            default=lambda o: o.__dict__,
+            sort_keys=True,
+            indent=4)
+        )
