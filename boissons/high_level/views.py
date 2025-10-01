@@ -1,19 +1,20 @@
 
 from django.views.generic import DetailView
-from django.http import JsonResponse
+from django.http import JsonResponse 
+from django.http import HttpResponse
 from .models import *
 class JsonDetailView(DetailView):
     def render_to_response(self, context, **response_kwargs):
         obj = self.get_object()
         if not hasattr(obj, 'toJSON'):
-            return JsonResponse({
+            return HttpResponse({
                 'error': f'{obj.__class__.__name__} n\'a pas de méthode json()'
             }, status=500)
         
         try:
-            return JsonResponse(obj.toJSON())
+            return HttpResponse(obj.toJSON(),content_type='application/json')
         except Exception as e:
-            return JsonResponse({
+            return HttpResponse({
                 'error': f'Erreur lors de la sérialisation: {str(e)}'
             }, status=500)
 class QuantiteMatierePremiereDetailView(JsonDetailView):

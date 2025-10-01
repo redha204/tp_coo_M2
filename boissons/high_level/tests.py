@@ -13,5 +13,9 @@ class MachineModelTests(TestCase):
         ApprovisionnementMatierePremiere.objects.create(localisation=l,prix_unitaire=10,delais=12,quantite=1000,matiere_premiere=m)
         ma=Machine.objects.create(nom="laas",prix_achat=3000,cout_maintenance=0,debit=30,surface=123,debit_energie=50,taux_utilisation=0,local=loc)
         coutLOCAL= Local.objects.first().costs()
-        print(ma.toJSON())
+
+
+        metier=Metier.objects.create(nom="kheray", remuneration=1)
+
+        print(eau.toJSON())
         #self.assertEqual(Localisation.objects.count(), 1)

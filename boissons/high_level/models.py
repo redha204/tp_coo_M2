@@ -56,13 +56,18 @@ class Metier(models.Model):
     remuneration = models.IntegerField()
     def __str__(self):
         return(self.nom)
-    def toJSON(self):
-        return(json.dumps(
+    def json(self):
+       return {
+           "id":self.id,
+           "name":self.nom,
+           "remuneration":self.remuneration,
+       }
+       """return(json.dumps(
             self,
             default=lambda o: o.__dict__,
             sort_keys=True,
             indent=4)
-        )
+        )"""""
 
 class Localisation(models.Model):
     nom = models.CharField(max_length=100)
