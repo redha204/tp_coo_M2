@@ -8,3 +8,20 @@ wheels/
 
 # Virtual environments
 .venv
+monenv/
+venv/
+
+# C++ build files
+boissons/low_level/build/
+boissons/low_level/vcpkg_installed/
+
+# Database
+*.sqlite3
+
+# IDE
+.vscode/
+.idea/
+
+# Personal files
+resume_projet.tex
+main.py

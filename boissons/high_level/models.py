@@ -26,6 +26,9 @@ class MatierePremiere(models.Model):
             "emprise": self.emprise,
         }
 
+    def json_extended(self):
+        return self.json()
+
 
 class QuantiteMatierePremiere(models.Model):
     quantite = models.IntegerField()
@@ -59,6 +62,9 @@ class Metier(models.Model):
             "remuneration": self.remuneration,
         }
 
+    def json_extended(self):
+        return self.json()
+
 
 class Localisation(models.Model):
     nom = models.CharField(max_length=100)
@@ -74,6 +80,14 @@ class Localisation(models.Model):
             "nom": self.nom,
             "taxes": self.taxes,
             "prix_m2": self.prix_m2,
+        }
+
+    def json_extended(self):
+        return {
+            **self.json(),
+            "energies": [e.json() for e in self.energie_set.all()],
+            "locaux": [l.json() for l in self.local_set.all()],
+            "approvisionnements": [a.json() for a in self.approvisionnementmatierepremiere_set.all()],
         }
 
 
@@ -96,6 +110,12 @@ class Energie(models.Model):
             "localisation_id": self.localisation.json(),
         }
 
+    def json_extended(self):
+        return {
+            **self.json(),
+            "debits": [d.json() for d in self.debitenergie_set.all()],
+        }
+
 
 class DebitEnergie(models.Model):
     debit = models.IntegerField()
@@ -110,6 +130,9 @@ class DebitEnergie(models.Model):
             "debit": self.debit,
             "energie_id": self.energie.json(),
         }
+
+    def json_extended(self):
+        return self.json()
 
 
 class Local(models.Model):
@@ -146,6 +169,13 @@ class Local(models.Model):
             "surface": self.surface,
         }
 
+    def json_extended(self):
+        return {
+            **self.json(),
+            "produits": [p.json() for p in self.produit_set.all()],
+            "machines": [m.json() for m in self.machine_set.all()],
+        }
+
 
 class Produit(models.Model):
     nom = models.CharField(max_length=100)
@@ -170,9 +200,16 @@ class Produit(models.Model):
             "local_id": self.local.json(),
         }
 
+    def json_extended(self):
+        return {
+            **self.json(),
+            "fabrications": [f.json() for f in self.fabrication_set.all()],
+        }
+
 
 class UtilisationMatierePremiere(QuantiteMatierePremiere):
-    pass
+    def json_extended(self):
+        return self.json()
 
 
 class ApprovisionnementMatierePremiere(QuantiteMatierePremiere):
@@ -186,10 +223,13 @@ class ApprovisionnementMatierePremiere(QuantiteMatierePremiere):
     def json(self):
         return {
             "id": self.id,
-            "localisation_id": self.Localisation.json(),
+            "localisation_id": self.localisation.json(),
             "prix_unitaire": self.prix_unitaire,
             "delais": self.delais,
         }
+
+    def json_extended(self):
+        return self.json()
 
 
 class RessourceHumaine(models.Model):
@@ -205,6 +245,9 @@ class RessourceHumaine(models.Model):
             "metier_id": self.metier.json(),
             "quantite": self.quantite,
         }
+
+    def json_extended(self):
+        return self.json()
 
 
 class Machine(models.Model):
@@ -227,13 +270,21 @@ class Machine(models.Model):
     def json(self):
         return {
             "id": self.id,
+            "nom": self.nom,
             "prix_achat": self.prix_achat,
             "cout_maintenance": self.cout_maintenance,
-            "operateurs": list(self.operateurs.valuer_liste("id", falt=True)),
+            "operateurs": list(self.operateurs.values_list("id", flat=True)),
+            "debit": self.debit,
             "surface": self.surface,
-            "debit_energie_id": self.debit_energie.json(),
+            "debit_energie": self.debit_energie,
             "taux_utilisation": self.taux_utilisation,
             "local_id": self.local.id,
+        }
+
+    def json_extended(self):
+        return {
+            **self.json(),
+            "operateurs_details": [o.json() for o in self.operateurs.all()],
         }
 
 
@@ -251,10 +302,19 @@ class Fabrication(models.Model):
             "id": self.Metierid,
             "produit_id": self.produit.json(),
             "utilisations_matiere_premiere": list(
-                self.utilisations_matiere_premiere.valuer_liste("id", falt=True)
+                self.utilisations_matiere_premiere.values_list("id", flat=True)
             ),
-            "machines": list(self.machines.valuer_liste("id", falt=True)),
+            "machines": list(self.machines.values_list("id", flat=True)),
             "ressources_humaines": list(
-                self.ressources_humaines.valuer_liste("id", falt=True)
+                self.ressources_humaines.values_list("id", flat=True)
             ),
+        }
+
+    def json_extended(self):
+        return {
+            "id": self.id,
+            "produit": self.produit.json(),
+            "utilisations_matiere_premiere": [u.json() for u in self.utilisations_matiere_premiere.all()],
+            "machines": [m.json() for m in self.machines.all()],
+            "ressources_humaines": [r.json() for r in self.ressources_humaines.all()],
         }

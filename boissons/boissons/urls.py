@@ -22,6 +22,7 @@ from high_level import views
 
 urlpatterns = [
     path("admin/", admin.site.urls),
+    path("api/<str:model_name>/<int:pk>/", views.ApiView.as_view(), name="api-extended"),
     path(
         "api/quantite-matiere-premiere/<int:pk>/",
         views.QuantiteMatierePremiereDetailView.as_view(),
