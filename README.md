@@ -54,3 +54,11 @@ Exemple : `http://localhost:8000/api/localisation/1/`
 - C++17 + CMake
 - Libraries C++ : CPR (HTTP), nlohmann/json (JSON parsing)
 - Smart pointers : `std::unique_ptr<>`, `std::optional<>`
+
+## Auteurs
+
+- Redha Aberkane
+- Fawzi Hadjara
+
+Master 2 ISTR
+
